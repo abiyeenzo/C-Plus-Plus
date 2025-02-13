@@ -1,91 +1,106 @@
 /**
  * @file
- * @brief Program to check if a number is an [Armstrong/Narcissistic
- * number](https://en.wikipedia.org/wiki/Narcissistic_number) in decimal system.
+ * @brief A program to check if a number is an [Armstrong](https://en.wikipedia.org/wiki/Narcissistic_number)
+ *        or Narcissistic number in the decimal system.
  *
  * @details
- * Armstrong number or [Narcissistic
- * number](https://en.wikipedia.org/wiki/Narcissistic_number) is a number that
- * is the sum of its own digits raised to the power of the number of digits.
- *
- * let n be the narcissistic number,
- * \f[F_b(n) = \sum_{i=0}^{k-1}d_{i}^{k}\f] for
- * \f$ b > 1 F_b : \N \to \N \f$ where
- * \f$ k = \lfloor log_b n\rfloor is the number of digits in the number in base
- * \f$b\f$, and \f$ d_i = \frac{n mod b^{i+1} - n mod b^{i}}{b^{i}} \f$
+ * An Armstrong (or Narcissistic) number is a number that is the sum of its own digits, 
+ * each raised to the power of the number of digits in the number.
+ * 
+ * Example:
+ * - For the number 153: 1^3 + 5^3 + 3^3 = 153, so 153 is an Armstrong number.
+ * 
+ * The formula for an Armstrong number is:
+ * \f[F_b(n) = \sum_{i=0}^{k-1}d_i^k\f] 
+ * where:
+ * - \( k \) is the number of digits in the number \( n \),
+ * - \( d_i \) is the ith digit of the number \( n \).
  *
  * @author [Neeraj Cherkara](https://github.com/iamnambiar)
  */
-#include <cassert>   /// for assert
-#include <cmath>     /// for std::pow
-#include <iostream>  /// for IO operations
+
+#include <cassert>   ///< for the assert function to verify test results
+#include <cmath>     ///< for mathematical functions like std::pow
+#include <iostream>  ///< for input/output operations
 
 /**
- * @brief Function to calculate the total number of digits in the number.
- * @param num Number
- * @return Total number of digits.
+ * @brief Function to calculate the number of digits in a number.
+ *
+ * @param num The number whose digits will be counted.
+ * @return The total number of digits in the number.
  */
 int number_of_digits(int num) {
-    int total_digits = 0;
+    int digit_count = 0;
+    
+    // Count digits by dividing the number by 10 in each iteration
     while (num > 0) {
-        num = num / 10;
-        ++total_digits;
+        num /= 10;
+        ++digit_count;
     }
-    return total_digits;
+    return digit_count;
 }
 
 /**
- * @brief Function to check whether the number is armstrong number or not.
- * @param number to be checked
- * @return `true` if the number is armstrong.
- * @return `false` if the number is not armstrong.
+ * @brief Function to check if a number is an Armstrong number.
+ *
+ * An Armstrong number is a number that is equal to the sum of its own digits, each raised to the power 
+ * of the number of digits in the number.
+ *
+ * @param number The number to check.
+ * @return `true` if the number is an Armstrong number, `false` otherwise.
  */
 bool is_armstrong(int number) {
-    // If the number is less than 0, then it is not an armstrong number.
+    // Edge case: Negative numbers can't be Armstrong numbers
     if (number < 0) {
         return false;
     }
 
     int sum = 0;
     int temp = number;
-    // Finding the total number of digits in the number
-    int total_digits = number_of_digits(number);
+    
+    // Calculate the number of digits in the number
+    int num_digits = number_of_digits(number);
+
+    // Process each digit in the number
     while (temp > 0) {
-        int rem = temp % 10;
-        // Finding each digit raised to the power total digit and add it to the
-        // total sum
-        sum += static_cast<int>(std::pow(rem, total_digits));
-        temp = temp / 10;
+        int digit = temp % 10; // Extract the last digit
+        // Add the digit raised to the power of the total digits
+        sum += static_cast<int>(std::pow(digit, num_digits));
+        temp /= 10; // Remove the last digit
     }
+
+    // Return true if the sum of powered digits equals the original number
     return number == sum;
 }
 
 /**
- * @brief Self-test implementations
+ * @brief Run tests to validate the functionality of the Armstrong number check.
+ *
+ * This function runs a series of tests to verify the correctness of the `is_armstrong` function.
+ * It uses assertions to ensure the expected results are returned for different test cases.
+ *
  * @returns void
  */
-static void test() {
-    // is_armstrong(370) returns true.
-    assert(is_armstrong(370) == true);
-    // is_armstrong(225) returns false.
-    assert(is_armstrong(225) == false);
-    // is_armstrong(-23) returns false.
-    assert(is_armstrong(-23) == false);
-    // is_armstrong(153) returns true.
-    assert(is_armstrong(153) == true);
-    // is_armstrong(0) returns true.
-    assert(is_armstrong(0) == true);
-    // is_armstrong(12) returns false.
-    assert(is_armstrong(12) == false);
+static void run_tests() {
+    // Test cases for Armstrong numbers
+    assert(is_armstrong(370) == true);  ///< 370 is an Armstrong number
+    assert(is_armstrong(153) == true);  ///< 153 is an Armstrong number
+    assert(is_armstrong(0) == true);    ///< 0 is an Armstrong number
+    assert(is_armstrong(-23) == false);///< Negative numbers are not Armstrong numbers
+    assert(is_armstrong(225) == false);///< 225 is not an Armstrong number
+    assert(is_armstrong(12) == false); ///< 12 is not an Armstrong number
 
-    std::cout << "All tests have successfully passed!\n";
+    std::cout << "All tests passed successfully!\n";
 }
 
 /**
- * @brief Main Function
- * @returns 0 on exit
+ * @brief Main function to run the Armstrong number test.
+ *
+ * The main function initiates the testing process and exits once all tests pass.
+ *
+ * @returns 0 on successful execution.
  */
 int main() {
-    test();  // run self-test implementations
+    run_tests();  ///< Execute the self-tests to validate the algorithm
     return 0;
 }
